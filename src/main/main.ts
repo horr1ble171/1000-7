@@ -13,6 +13,8 @@ interface AppSettings {
   stopHotkey: string
   totalDuration: number
   dotaMode: boolean
+  dotaEnterDelay: number
+  dotaSendDelay: number
   theme: 'dark' | 'light'
   syncThemeWithOS: boolean
   animations: boolean
@@ -29,6 +31,8 @@ const store = new Store<AppSettings>({
     stopHotkey: 'F2',
     totalDuration: 25,
     dotaMode: false,
+    dotaEnterDelay: 120,
+    dotaSendDelay: 60,
     theme: 'dark',
     syncThemeWithOS: true,
     animations: true,
@@ -243,13 +247,26 @@ ipcMain.handle('get-settings', () => ({
   uiScale: store.get('uiScale'),
   autoStart: store.get('autoStart'),
   minimizeToTray: store.get('minimizeToTray'),
-  dotaMode: store.get('dotaMode')
+  dotaMode: store.get('dotaMode'),
+  dotaEnterDelay: store.get('dotaEnterDelay'),
+  dotaSendDelay: store.get('dotaSendDelay')
 }))
 
 ipcMain.handle('get-dota-mode', () => store.get('dotaMode'))
 
 ipcMain.handle('set-dota-mode', (_, enabled: boolean) => {
   store.set('dotaMode', enabled)
+  return true
+})
+
+ipcMain.handle('get-dota-delays', () => ({
+  enterDelay: store.get('dotaEnterDelay'),
+  sendDelay: store.get('dotaSendDelay')
+}))
+
+ipcMain.handle('set-dota-delays', (_, enterDelay: number, sendDelay: number) => {
+  store.set('dotaEnterDelay', Math.max(10, Math.min(1000, enterDelay)))
+  store.set('dotaSendDelay', Math.max(10, Math.min(1000, sendDelay)))
   return true
 })
 
