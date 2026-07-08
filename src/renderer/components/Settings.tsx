@@ -180,12 +180,25 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          <motion.div className="settings-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} onClick={onClose} />
-          <motion.div initial={{ x: 340 }} animate={{ x: 0 }} exit={{ x: 340 }} transition={{ type: 'spring', damping: 28, stiffness: 300 }} style={{ position: 'fixed', inset: 0, zIndex: 100, pointerEvents: 'none' }}>
-            <div style={{ pointerEvents: 'auto', height: '100%' }}>{content}</div>
+        <motion.div
+          className="settings-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ x: 340 }}
+            animate={{ x: 0 }}
+            exit={{ x: 340 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+            style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 340 }}
+          >
+            {content}
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   )

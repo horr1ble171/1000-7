@@ -101,6 +101,7 @@ function createWindow() {
     minHeight: 560,
     resizable: true,
     titleBarStyle: 'hidden',
+    roundedCorners: isWindows11,
     ...(isWindows11 ? { backgroundMaterial: 'mica' as const } : {}),
     hasShadow: true,
     show: false,
