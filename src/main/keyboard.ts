@@ -55,8 +55,8 @@ export function typeAndEnterDota(text: string): void {
     const ps = getPowerShell()
     const escaped = escapeKeys(text).replace(/'/g, "''")
     ps.stdin!.write(
-      `Send-Keys '{ENTER}'; Start-Sleep -Milliseconds 25; ` +
-      `Send-Keys '${escaped}'; Start-Sleep -Milliseconds 25; Send-Keys '{ENTER}'\r\n`
+      `Send-Keys '{ENTER}'; Start-Sleep -Milliseconds 45; ` +
+      `Send-Keys '${escaped}'; Start-Sleep -Milliseconds 45; Send-Keys '{ENTER}'\r\n`
     )
   } catch {
     // ignore
