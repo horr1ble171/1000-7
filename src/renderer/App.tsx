@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Gamepad2 } from 'lucide-react'
 import { useElectron } from '@/hooks/useElectron'
 import { useHotkeys } from '@/hooks/useHotkeys'
 import { Header } from '@/components/Header'
@@ -16,6 +17,7 @@ import { TOTAL_COUNT } from '@shared/constants'
 export default function App() {
   const {
     getHotkeys, saveHotkey, getSettings, getDuration, setDuration,
+    getDotaMode, setDotaMode,
     startSending, stopSending, onMessage
   } = useElectron()
 
@@ -28,6 +30,7 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [online, setOnline] = useState(true)
   const [uiScale, setUiScale] = useState(100)
+  const [dotaMode, setDotaModeLocal] = useState(false)
 
   const handleSaveHotkey = async (type: 'start' | 'stop', key: string) => {
     await saveHotkey(type, key)
@@ -45,6 +48,7 @@ export default function App() {
       const settings = await getSettings()
       if (settings) {
         setUiScale(settings.uiScale)
+        setDotaModeLocal(settings.dotaMode)
         const theme = settings.syncThemeWithOS ? null : settings.theme
         if (theme) document.documentElement.classList.toggle('light', theme === 'light')
         document.documentElement.style.fontSize = `${settings.uiScale / 100}rem`
@@ -81,6 +85,12 @@ export default function App() {
   const handleStop = () => { stopSending() }
   const handleDurationChange = (value: number) => { setTotalSec(value); setDuration(value) }
 
+  const handleDotaToggle = () => {
+    const next = !dotaMode
+    setDotaModeLocal(next)
+    setDotaMode(next)
+  }
+
   return (
     <div className="glass-panel">
       <div className="orb w-80 h-80 orb-red -top-40 -right-40" />
@@ -110,6 +120,27 @@ export default function App() {
             onChange={handleDurationChange}
             disabled={status === 'running'}
           />
+        </div>
+
+        <div>
+          <div
+            onClick={handleDotaToggle}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
+              borderRadius: 14, padding: '10px 14px', cursor: 'pointer',
+              transition: 'background 0.15s', WebkitAppRegion: 'no-drag' as any
+            }}
+          >
+            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Gamepad2 size={14} style={{ color: dotaMode ? 'var(--accent)' : 'var(--text-muted)' }} />
+              <span>Режим Dota 2</span>
+              <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+                {dotaMode ? 'ENTER + число + ENTER' : 'число + ENTER'}
+              </span>
+            </span>
+            <div className={`toggle-switch ${dotaMode ? 'active' : ''}`} />
+          </div>
         </div>
 
         <Controls onStart={handleStart} onStop={handleStop} status={status} />

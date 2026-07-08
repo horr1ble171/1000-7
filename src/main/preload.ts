@@ -20,7 +20,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
       'get-auto-start',
       'set-auto-start',
       'show-notification',
-      'set-progress-bar'
+      'set-progress-bar',
+      'get-dota-mode',
+      'set-dota-mode'
     ]
     if (validChannels.includes(channel)) {
       return ipcRenderer.invoke(channel, ...args)

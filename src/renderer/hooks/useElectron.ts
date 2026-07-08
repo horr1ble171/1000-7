@@ -38,6 +38,9 @@ export function useElectron() {
 
   const setProgressBar = useCallback(async (progress: number) => sendMessage('set-progress-bar', progress), [sendMessage])
 
+  const getDotaMode = useCallback(async () => sendMessage('get-dota-mode'), [sendMessage])
+  const setDotaMode = useCallback(async (enabled: boolean) => sendMessage('set-dota-mode', enabled), [sendMessage])
+
   const startSending = useCallback(() => sendMessage('start-sending'), [sendMessage])
   const stopSending = useCallback(() => sendMessage('stop-sending'), [sendMessage])
 
@@ -60,6 +63,8 @@ export function useElectron() {
     setAutoStart,
     showNotification,
     setProgressBar,
+    getDotaMode,
+    setDotaMode,
     startSending,
     stopSending
   }

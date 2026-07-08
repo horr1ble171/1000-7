@@ -32,8 +32,8 @@ function psk(keys: string): void {
   }
 }
 
-export function typeAndEnter(text: string): void {
-  const escaped = text
+function escapeKeys(text: string): string {
+  return text
     .replace(/\+/g, '{+}')
     .replace(/\^/g, '{^}')
     .replace(/%/g, '{%}')
@@ -44,8 +44,14 @@ export function typeAndEnter(text: string): void {
     .replace(/\}/g, '{}}')
     .replace(/\[/g, '{[}')
     .replace(/\]/g, '{]}')
+}
 
-  psk(`${escaped}{ENTER}`)
+export function typeAndEnter(text: string): void {
+  psk(`${escapeKeys(text)}{ENTER}`)
+}
+
+export function typeAndEnterDota(text: string): void {
+  psk(`{ENTER}${escapeKeys(text)}{ENTER}`)
 }
 
 export function killPowerShell(): void {
