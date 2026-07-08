@@ -1,5 +1,5 @@
-appId: com.autosender.app
-productName: Auto Sender
+appId: com.app10007.app
+productName: 1000-7
 directories:
   output: release
   buildResources: build

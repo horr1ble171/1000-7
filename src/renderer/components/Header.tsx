@@ -32,7 +32,7 @@ export function Header({ onOpenSettings }: HeaderProps) {
       onDoubleClick={maximizeWindow}
     >
       <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-        AUTO SENDER
+        1000-7
       </span>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>

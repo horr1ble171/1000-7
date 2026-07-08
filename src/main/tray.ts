@@ -18,7 +18,7 @@ export function setupTray(mainWindow: BrowserWindow, _store: Store) {
   }
 
   tray = new Tray(trayIcon)
-  tray.setToolTip('Auto Sender — 1000-7')
+  tray.setToolTip('1000-7')
   tray.setIgnoreDoubleClickEvents(false)
 
   updateMenu(mainWindow)

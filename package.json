@@ -1,5 +1,5 @@
 {
-  "name": "auto-sender",
+  "name": "1000-7",
   "version": "1.0.0",
   "private": true,
   "main": "dist/main/main.js",
@@ -35,8 +35,8 @@
     "vite-plugin-electron-renderer": "^0.14.6"
   },
   "build": {
-    "appId": "com.autosender.app",
-    "productName": "Auto Sender",
+    "appId": "com.app10007.app",
+    "productName": "1000-7",
     "directories": {
       "output": "release"
     },
