@@ -56,16 +56,12 @@ html, body {
     position: relative;
     width: 100%;
     height: 100vh;
-    background: rgba(3, 3, 4, 0.85);
+    background: var(--bg-dark);
     border: none;
     box-shadow: none;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-  }
-
-  .light .glass-panel {
-    background: rgba(245, 245, 247, 0.85);
   }
 
   .glass-card {

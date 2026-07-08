@@ -1,8 +1,12 @@
 import { app, BrowserWindow, ipcMain, globalShortcut, screen, nativeTheme, nativeImage, Notification, shell } from 'electron'
 import path from 'path'
+import os from 'os'
 import Store from 'electron-store'
 import { setupTray } from './tray'
 import { setupIPCHandlers } from './ipcHandlers'
+
+const buildNumber = parseInt(os.release().split('.')[2] || '0', 10)
+const isWindows11 = process.platform === 'win32' && buildNumber >= 22000
 
 interface AppSettings {
   startHotkey: string
@@ -110,7 +114,7 @@ function createWindow() {
     resizable: true,
     titleBarStyle: 'hidden',
     titleBarOverlay: { color: '#00000000', symbolColor: '#ffffff', height: 38 },
-    backgroundMaterial: 'mica',
+    ...(isWindows11 ? { backgroundMaterial: 'mica' as const } : {}),
     hasShadow: true,
     show: false,
     webPreferences: {
