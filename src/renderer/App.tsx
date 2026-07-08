@@ -83,6 +83,13 @@ export default function App() {
 
   const handleStart = () => { setStatus('running'); startSending() }
   const handleStop = () => { stopSending() }
+  const handleReset = () => {
+    setStatus('idle')
+    setStatusText('ОЖИДАНИЕ')
+    setCurrentNumber('1000-7')
+    setCurrent(0)
+    setTotal(TOTAL_COUNT)
+  }
   const handleDurationChange = (value: number) => { setTotalSec(value); setDuration(value) }
 
   const handleDotaToggle = () => {
@@ -144,6 +151,20 @@ export default function App() {
         </div>
 
         <Controls onStart={handleStart} onStop={handleStop} status={status} />
+
+        <button
+          onClick={handleReset}
+          style={{
+            width: '100%', padding: '8px 0', borderRadius: 12, border: '1px solid var(--border-subtle)',
+            background: 'transparent', color: 'var(--text-muted)', fontSize: 10, fontWeight: 600,
+            letterSpacing: '0.08em', cursor: 'pointer', transition: 'all 0.12s ease',
+            textTransform: 'uppercase', WebkitAppRegion: 'no-drag' as any
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'var(--bg-card)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent' }}
+        >
+          Сброс
+        </button>
 
         <div className="footer-row" style={{ justifyContent: 'flex-end' }}>
           <span className="footer-item">v1.0.0</span>
