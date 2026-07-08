@@ -73,24 +73,10 @@ function handleDeepLink(url: string) {
 // ─── Apply Theme ────────────────────────────────────────────
 function applyTheme() {
   const syncTheme = store.get('syncThemeWithOS')
-  let theme: 'dark' | 'light'
   if (syncTheme) {
-    theme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
-  } else {
-    theme = store.get('theme')
+    const theme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
+    mainWindow?.webContents.send('theme-changed', theme)
   }
-  mainWindow?.webContents.send('theme-changed', theme)
-  updateOverlayColors()
-}
-
-function updateOverlayColors() {
-  const isDark = nativeTheme.shouldUseDarkColors
-  const syncTheme = store.get('syncThemeWithOS')
-  const effectiveTheme = syncTheme ? (isDark ? 'dark' : 'light') : store.get('theme')
-  const isDarkTheme = effectiveTheme === 'dark'
-  const symbolColor = isDarkTheme ? '#ffffff' : '#000000'
-  const bg = isWindows11 ? '#00000000' : (isDarkTheme ? '#030304' : '#f5f5f7')
-  mainWindow?.setTitleBarOverlay({ color: bg, symbolColor, height: 38 })
 }
 
 // ─── Create Window ──────────────────────────────────────────
@@ -115,7 +101,6 @@ function createWindow() {
     minHeight: 560,
     resizable: true,
     titleBarStyle: 'hidden',
-    titleBarOverlay: { color: isWindows11 ? '#00000000' : '#030304', symbolColor: '#ffffff', height: 38 },
     ...(isWindows11 ? { backgroundMaterial: 'mica' as const } : {}),
     hasShadow: true,
     show: false,

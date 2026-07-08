@@ -144,10 +144,7 @@ export default function App() {
       <div className="orb w-80 h-80 orb-red -top-40 -right-40" />
       <div className="orb w-64 h-64 orb-white -bottom-32 -left-32" />
 
-      <Header
-        onMaximize={maximizeWindow}
-        onOpenSettings={() => setSettingsOpen(true)}
-      />
+      <Header onOpenSettings={() => setSettingsOpen(true)} />
 
       <div className="safe-zone">
         <div className="flex items-center justify-between flex-shrink-0">
