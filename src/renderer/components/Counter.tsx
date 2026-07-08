@@ -9,16 +9,14 @@ export function Counter({ current, total }: CounterProps) {
   const progress = total > 0 ? (current / total) * 100 : 0
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-          Отправлено
-        </span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span className="card-label" style={{ marginBottom: 0 }}>Отправлено</span>
         <motion.span
           key={`${current}-${total}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}
+          style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)' }}
           className="tabular-nums"
         >
           {current} / {total}

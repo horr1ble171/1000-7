@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
-import { Minus, X, Square } from 'lucide-react'
-import { Settings } from 'lucide-react'
+import { Minus, X, Square, Settings as SettingsIcon } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useElectron } from '../hooks/useElectron'
+import type { AppStatus } from '@/types'
 
 interface HeaderProps {
   onOpenSettings: () => void
+  status: AppStatus
+  statusText: string
 }
 
-export function Header({ onOpenSettings }: HeaderProps) {
+export function Header({ onOpenSettings, status, statusText }: HeaderProps) {
   const { closeWindow, minimizeWindow, maximizeWindow, isMaximized, onMessage } = useElectron()
   const [maximized, setMaximized] = useState(false)
 
@@ -17,55 +20,56 @@ export function Header({ onOpenSettings }: HeaderProps) {
     return unsub as () => void
   }, [])
 
+  const isRunning = status === 'running'
+
   return (
-    <div
-      style={{
-        height: 40,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 14px',
-        WebkitAppRegion: 'drag' as any,
-        flexShrink: 0,
-        gap: 8
-      }}
-      onDoubleClick={maximizeWindow}
-    >
-      <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-        1000-7
-      </span>
+    <div className="titlebar" onDoubleClick={maximizeWindow}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
+        <span className="titlebar-title">1000-7</span>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-        <button
-          className="win-btn"
-          onClick={onOpenSettings}
-          title="Настройки"
-        >
-          <Settings size={13} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <motion.div
+            className={`glow-dot ${isRunning ? '' : 'inactive'}`}
+            animate={isRunning ? { scale: [1, 1.4, 1] } : { scale: 1 }}
+            transition={isRunning ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.3 }}
+          />
+          {isRunning && (
+            <motion.div
+              style={{
+                position: 'absolute', width: 6, height: 6, borderRadius: '50%',
+                background: 'var(--accent)'
+              }}
+              animate={{ scale: [1, 3], opacity: [0.4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+            />
+          )}
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={statusText}
+              initial={{ opacity: 0, y: 3 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -3 }}
+              transition={{ duration: 0.15 }}
+              style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.12em', color: 'var(--text-secondary)', textTransform: 'uppercase' }}
+            >
+              {statusText}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+      </div>
+
+      <div className="titlebar-right">
+        <button className="win-btn" onClick={onOpenSettings} title="Настройки">
+          <SettingsIcon size={13} />
         </button>
-
-        <button
-          className="win-btn"
-          onClick={minimizeWindow}
-          title="Свернуть"
-        >
-          <Minus size={13} />
+        <button className="win-btn" onClick={minimizeWindow} title="Свернуть">
+          <Minus size={12} />
         </button>
-
-        <button
-          className="win-btn"
-          onClick={maximizeWindow}
-          title={maximized ? 'Восстановить' : 'Развернуть'}
-        >
-          {maximized ? <Square size={11} /> : <Square size={11} />}
+        <button className="win-btn" onClick={maximizeWindow} title={maximized ? 'Восстановить' : 'Развернуть'}>
+          <Square size={10} />
         </button>
-
-        <button
-          className="win-btn win-btn-close"
-          onClick={closeWindow}
-          title="Закрыть"
-        >
-          <X size={13} />
+        <button className="win-btn win-btn-close" onClick={closeWindow} title="Закрыть">
+          <X size={12} />
         </button>
       </div>
     </div>

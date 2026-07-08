@@ -12,19 +12,17 @@ const SLIDER_MAX = 300
 
 export function SpeedControl({ duration, onChange, disabled }: SpeedControlProps) {
   const [inputValue, setInputValue] = useState(String(duration))
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [dragging, setDragging] = useState(false)
 
   useEffect(() => {
-    setInputValue(String(duration))
-  }, [duration])
+    if (!dragging) setInputValue(String(duration))
+  }, [duration, dragging])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value
     setInputValue(raw)
     const num = parseInt(raw, 10)
-    if (!isNaN(num) && num >= SLIDER_MIN) {
-      onChange(num)
-    }
+    if (!isNaN(num) && num >= SLIDER_MIN) onChange(num)
   }
 
   const handleInputBlur = () => {
@@ -42,41 +40,39 @@ export function SpeedControl({ duration, onChange, disabled }: SpeedControlProps
   const formatTime = (s: number) => {
     if (s < 60) return `${s}с`
     const m = Math.floor(s / 60)
-    const sec = s % 60
-    return sec > 0 ? `${m}м ${sec}с` : `${m}м`
+    return s % 60 > 0 ? `${m}м ${s % 60}с` : `${m}м`
   }
 
   return (
-    <div className="glass-card">
-      <div className="flex items-center gap-2 mb-3">
-        <Timer size={12} style={{ color: 'var(--text-muted)' }} />
-        <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-          Длительность
-        </span>
-        <span style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--text-muted)' }} className="tabular-nums">
-          ~{formatTime(duration)}
+    <div className="glass-card" style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+        <Timer size={11} style={{ color: 'var(--text-muted)' }} />
+        <span className="card-label" style={{ marginBottom: 0 }}>Длительность</span>
+        <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 600, color: 'var(--text-muted)' }}>
+          {formatTime(duration)}
         </span>
       </div>
-
-      <div className="flex items-center gap-2.5">
-        <div className="relative flex-1 h-5 flex items-center">
-          <div className="absolute inset-x-0 h-[2px] rounded-full" style={{ background: 'var(--progress-bg)' }}>
-            <div className="h-full rounded-full" style={{ width: `${progress}%`, background: 'var(--progress-fill)' }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ flex: 1, position: 'relative', height: 20, display: 'flex', alignItems: 'center' }}>
+          <div style={{ position: 'absolute', left: 0, right: 0, height: 3, background: 'var(--progress-bg)', borderRadius: 4 }}>
+            <div style={{ width: `${progress}%`, height: '100%', background: 'var(--progress-fill)', borderRadius: 4 }} />
           </div>
           <input
             type="range"
             min={SLIDER_MIN}
             max={SLIDER_MAX}
             value={Math.min(duration, SLIDER_MAX)}
-            onChange={(e) => onChange(Number(e.target.value))}
+            onChange={(e) => { setDragging(true); onChange(Number(e.target.value)) }}
+            onMouseUp={() => setDragging(false)}
+            onTouchEnd={() => setDragging(false)}
             disabled={disabled}
-            className="scale-slider"
-            style={{ position: 'absolute', inset: 0, opacity: 0, cursor: disabled ? 'not-allowed' : 'pointer' }}
+            style={{
+              position: 'absolute', inset: 0, opacity: 0, cursor: disabled ? 'not-allowed' : 'pointer',
+              width: '100%', margin: 0
+            }}
           />
         </div>
-
         <input
-          ref={inputRef}
           type="text"
           inputMode="numeric"
           value={inputValue}
@@ -84,20 +80,12 @@ export function SpeedControl({ duration, onChange, disabled }: SpeedControlProps
           onBlur={handleInputBlur}
           disabled={disabled}
           style={{
-            width: 56,
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 8,
-            padding: '4px 8px',
-            fontSize: 12,
-            color: 'var(--text-secondary)',
-            textAlign: 'center',
-            fontWeight: 600,
-            outline: 'none',
+            width: 48, background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
+            borderRadius: 6, padding: '4px 6px', fontSize: 11, color: 'var(--text-secondary)',
+            textAlign: 'center', fontWeight: 600, outline: 'none', flexShrink: 0,
             opacity: disabled ? 0.3 : 1
           }}
         />
-        <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--text-muted)' }}>сек</span>
       </div>
     </div>
   )
