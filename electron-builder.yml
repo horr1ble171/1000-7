@@ -9,6 +9,7 @@ files:
 win:
   target: nsis
   icon: public/icon.ico
+  sign: false
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
