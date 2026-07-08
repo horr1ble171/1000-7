@@ -17,7 +17,7 @@ import { TOTAL_COUNT } from '@shared/constants'
 export default function App() {
   const {
     getHotkeys, saveHotkey, getSettings, getDuration, setDuration,
-    getDotaMode, setDotaMode, getDotaDelays, setDotaDelays,
+    getDotaMode, setDotaMode,
     startSending, stopSending, onMessage
   } = useElectron()
 
@@ -31,8 +31,6 @@ export default function App() {
   const [online, setOnline] = useState(true)
   const [uiScale, setUiScale] = useState(100)
   const [dotaMode, setDotaModeLocal] = useState(false)
-  const [enterDelay, setEnterDelay] = useState(120)
-  const [sendDelay, setSendDelay] = useState(60)
 
   const handleSaveHotkey = async (type: 'start' | 'stop', key: string) => {
     await saveHotkey(type, key)
@@ -51,8 +49,6 @@ export default function App() {
       if (settings) {
         setUiScale(settings.uiScale)
         setDotaModeLocal(settings.dotaMode)
-        setEnterDelay(settings.dotaEnterDelay ?? 120)
-        setSendDelay(settings.dotaSendDelay ?? 60)
         const theme = settings.syncThemeWithOS ? null : settings.theme
         if (theme) document.documentElement.classList.toggle('light', theme === 'light')
         document.documentElement.style.fontSize = `${settings.uiScale / 100}rem`
@@ -93,12 +89,6 @@ export default function App() {
     const next = !dotaMode
     setDotaModeLocal(next)
     setDotaMode(next)
-  }
-
-  const inputBase: React.CSSProperties = {
-    width: 56, background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
-    borderRadius: 8, padding: '4px 8px', fontSize: 11, color: 'var(--text-secondary)',
-    textAlign: 'center', fontWeight: 600, outline: 'none'
   }
 
   return (
@@ -151,51 +141,6 @@ export default function App() {
             </span>
             <div className={`toggle-switch ${dotaMode ? 'active' : ''}`} />
           </div>
-
-          {dotaMode && (
-            <div style={{
-              display: 'flex', gap: 12, marginTop: 8,
-              background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
-              borderRadius: 14, padding: '10px 14px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>Открытие</span>
-                <input
-                  type="number"
-                  min={10}
-                  max={1000}
-                  value={enterDelay}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value)
-                    if (!isNaN(v) && v >= 10 && v <= 1000) {
-                      setEnterDelay(v)
-                      setDotaDelays(v, sendDelay)
-                    }
-                  }}
-                  style={inputBase}
-                />
-                <span style={{ fontSize: 9, color: 'var(--text-muted)' }}>мс</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>Отправка</span>
-                <input
-                  type="number"
-                  min={10}
-                  max={1000}
-                  value={sendDelay}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value)
-                    if (!isNaN(v) && v >= 10 && v <= 1000) {
-                      setSendDelay(v)
-                      setDotaDelays(enterDelay, v)
-                    }
-                  }}
-                  style={inputBase}
-                />
-                <span style={{ fontSize: 9, color: 'var(--text-muted)' }}>мс</span>
-              </div>
-            </div>
-          )}
         </div>
 
         <Controls onStart={handleStart} onStop={handleStop} status={status} />

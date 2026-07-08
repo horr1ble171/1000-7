@@ -31,11 +31,9 @@ export function setupIPCHandlers(mainWindow: BrowserWindow | null, store: Store)
     mainWindow?.webContents.send('status-update', 'running', 'ОТПРАВКА...')
 
     if (dotaMode) {
-      const enterDelay = store.get('dotaEnterDelay') as number || 120
-      const sendDelay = store.get('dotaSendDelay') as number || 60
       for (let i = 0; i < sequence.length && !shouldStop; i++) {
         const text = sequence[i]
-        typeAndEnterDota(text, enterDelay, sendDelay)
+        typeAndEnterDota(text)
         mainWindow?.webContents.send('number-update', text)
         mainWindow?.webContents.send('counter-update', i + 1, sequence.length)
         await sleep(delay)

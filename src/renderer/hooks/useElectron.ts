@@ -40,8 +40,6 @@ export function useElectron() {
 
   const getDotaMode = useCallback(async () => sendMessage('get-dota-mode'), [sendMessage])
   const setDotaMode = useCallback(async (enabled: boolean) => sendMessage('set-dota-mode', enabled), [sendMessage])
-  const getDotaDelays = useCallback(async () => sendMessage('get-dota-delays'), [sendMessage])
-  const setDotaDelays = useCallback(async (enterDelay: number, sendDelay: number) => sendMessage('set-dota-delays', enterDelay, sendDelay), [sendMessage])
 
   const startSending = useCallback(() => sendMessage('start-sending'), [sendMessage])
   const stopSending = useCallback(() => sendMessage('stop-sending'), [sendMessage])
@@ -67,8 +65,6 @@ export function useElectron() {
     setProgressBar,
     getDotaMode,
     setDotaMode,
-    getDotaDelays,
-    setDotaDelays,
     startSending,
     stopSending
   }
