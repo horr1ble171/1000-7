@@ -96,6 +96,9 @@ export default function App() {
     const next = !dotaMode
     setDotaModeLocal(next)
     setDotaMode(next)
+    const newDuration = next ? 40 : 25
+    setTotalSec(newDuration)
+    setDuration(newDuration)
   }
 
   return (
