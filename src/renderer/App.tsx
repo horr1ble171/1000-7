@@ -114,11 +114,7 @@ export default function App() {
 
         <Controls onStart={handleStart} onStop={handleStop} status={status} />
 
-        <div className="footer-row">
-          <span className="footer-item">
-            <span className={`network-dot ${online ? 'online' : 'offline'}`} />
-            {online ? 'Online' : 'Offline'}
-          </span>
+        <div className="footer-row" style={{ justifyContent: 'flex-end' }}>
           <span className="footer-item">v1.0.0</span>
         </div>
       </div>

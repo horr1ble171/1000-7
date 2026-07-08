@@ -93,7 +93,7 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
 
   const Row = ({ label, icon, children }: any) => (
     <div className="settings-row">
-      <span className="settings-label-text">{icon}{label}</span>
+      <span className="settings-label-text">{icon && <span style={{ display: 'flex' }}>{icon}</span>}{label}</span>
       {children}
     </div>
   )
@@ -109,13 +109,13 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
       <div className="settings-body">
         {/* Внешний вид */}
         <div className="settings-group">
-          <div className="settings-group-label"><Palette size={11} style={{ marginRight: 4, verticalAlign: -1 }} />Внешний вид</div>
+          <div className="settings-group-label" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Palette size={11} />Внешний вид</div>
           <div className={window.innerHeight > 700 ? 'glass-card' : ''} style={window.innerHeight <= 700 ? { padding: '8px 0' } : { padding: 12 }}>
             <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
               <button className={`theme-btn ${!syncThemeWithOS && theme === 'dark' ? 'active' : ''}`} onClick={() => handleTheme('dark')}><Moon size={14} /></button>
               <button className={`theme-btn ${!syncThemeWithOS && theme === 'light' ? 'active' : ''}`} onClick={() => handleTheme('light')}><Sun size={14} /></button>
             </div>
-            <Row label="Синхронизация с Windows" icon={<MonitorCheck size={13} style={{ marginRight: 2 }} />}>
+            <Row label="Синхронизация с Windows" icon={<MonitorCheck size={13} />}>
               <div className={`toggle-switch ${syncThemeWithOS ? 'active' : ''}`} onClick={toggleSync} />
             </Row>
           </div>
@@ -123,7 +123,7 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
 
         {/* Горячие клавиши */}
         <div className="settings-group">
-          <div className="settings-group-label"><Keyboard size={11} style={{ marginRight: 4, verticalAlign: -1 }} />Горячие клавиши</div>
+          <div className="settings-group-label" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Keyboard size={11} />Горячие клавиши</div>
           <div className="glass-card" style={{ padding: 12 }}>
             <Row label="Старт">
               <button className={`hotkey-pill ${listening === 'start' ? 'listening' : ''}`} style={{ minWidth: 56 }} onClick={() => handleHotkeyClick('start')}>
@@ -140,15 +140,15 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
 
         {/* Интерфейс */}
         <div className="settings-group">
-          <div className="settings-group-label"><Sliders size={11} style={{ marginRight: 4, verticalAlign: -1 }} />Интерфейс</div>
+          <div className="settings-group-label" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Sliders size={11} />Интерфейс</div>
           <div className="glass-card" style={{ padding: 12 }}>
             <Row label="Анимации" icon={<Sparkles size={13} />}>
               <div className={`toggle-switch ${animations ? 'active' : ''}`} onClick={toggleAnim} />
             </Row>
             <Row label="Масштаб UI" icon={<Monitor size={13} />}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, maxWidth: 160 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, maxWidth: 170 }}>
                 <input type="range" className="scale-slider" min={80} max={150} step={5} value={uiScale} onChange={handleScale} />
-                <span className="scale-value">{uiScale}%</span>
+                <span className="scale-value" style={{ minWidth: 32, textAlign: 'right' }}>{uiScale}%</span>
               </div>
             </Row>
           </div>
@@ -156,7 +156,7 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
 
         {/* Поведение */}
         <div className="settings-group">
-          <div className="settings-group-label"><Settings2 size={11} style={{ marginRight: 4, verticalAlign: -1 }} />Поведение</div>
+          <div className="settings-group-label" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Settings2 size={11} />Поведение</div>
           <div className="glass-card" style={{ padding: 12 }}>
             <Row label="Автозапуск при старте Windows" icon={<Power size={13} />}>
               <div className={`toggle-switch ${autoStart ? 'active' : ''}`} onClick={toggleAutoStart} />

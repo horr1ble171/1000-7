@@ -143,6 +143,10 @@ html, body {
   min-height: 0;
 }
 
+.content > :last-child {
+  margin-top: auto;
+}
+
 /* ─── Cards ───────────────────────────────────────────────── */
 .glass-card {
   background: var(--bg-card);
@@ -431,7 +435,7 @@ html, body {
   color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: var(--sp-6);
+  gap: 8px;
 }
 
 .settings-backdrop {
@@ -470,17 +474,6 @@ html, body {
   align-items: center;
   gap: var(--sp-4);
 }
-
-/* ─── Network Badge ────────────────────────────────────────── */
-.network-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.network-dot.online { background: #30d158; }
-.network-dot.offline { background: var(--accent); }
 
 /* ─── Split Row ────────────────────────────────────────────── */
 .split-row {
