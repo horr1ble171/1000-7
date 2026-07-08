@@ -12,11 +12,11 @@ const SLIDER_MAX = 300
 
 export function SpeedControl({ duration, onChange, disabled }: SpeedControlProps) {
   const [inputValue, setInputValue] = useState(String(duration))
-  const [dragging, setDragging] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
 
   useEffect(() => {
-    if (!dragging) setInputValue(String(duration))
-  }, [duration, dragging])
+    if (!isDragging) setInputValue(String(duration))
+  }, [duration, isDragging])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value
@@ -35,7 +35,7 @@ export function SpeedControl({ duration, onChange, disabled }: SpeedControlProps
     }
   }
 
-  const progress = Math.min(((duration - SLIDER_MIN) / (SLIDER_MAX - SLIDER_MIN)) * 100, 100)
+  const progress = ((duration - SLIDER_MIN) / (SLIDER_MAX - SLIDER_MIN)) * 100
 
   const formatTime = (s: number) => {
     if (s < 60) return `${s}с`
@@ -54,21 +54,23 @@ export function SpeedControl({ duration, onChange, disabled }: SpeedControlProps
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ flex: 1, position: 'relative', height: 20, display: 'flex', alignItems: 'center' }}>
-          <div style={{ position: 'absolute', left: 0, right: 0, height: 3, background: 'var(--progress-bg)', borderRadius: 4 }}>
-            <div style={{ width: `${progress}%`, height: '100%', background: 'var(--progress-fill)', borderRadius: 4 }} />
+          <div style={{ position: 'absolute', left: 0, right: 0, height: 3, background: 'var(--progress-bg)', borderRadius: 4, pointerEvents: 'none' }}>
+            <div style={{ width: `${Math.min(progress, 100)}%`, height: '100%', background: 'var(--progress-fill)', borderRadius: 4 }} />
           </div>
           <input
             type="range"
             min={SLIDER_MIN}
             max={SLIDER_MAX}
             value={Math.min(duration, SLIDER_MAX)}
-            onChange={(e) => { setDragging(true); onChange(Number(e.target.value)) }}
-            onMouseUp={() => setDragging(false)}
-            onTouchEnd={() => setDragging(false)}
+            onChange={(e) => { setIsDragging(true); onChange(Number(e.target.value)) }}
+            onMouseUp={() => setIsDragging(false)}
+            onTouchEnd={() => setIsDragging(false)}
             disabled={disabled}
             style={{
-              position: 'absolute', inset: 0, opacity: 0, cursor: disabled ? 'not-allowed' : 'pointer',
-              width: '100%', margin: 0
+              width: '100%', height: 20, margin: 0, padding: 0, background: 'transparent',
+              outline: 'none', cursor: disabled ? 'not-allowed' : 'pointer',
+              WebkitAppearance: 'none', appearance: 'none',
+              position: 'relative', zIndex: 1, opacity: 0
             }}
           />
         </div>

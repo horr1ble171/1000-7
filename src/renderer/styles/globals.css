@@ -280,6 +280,7 @@ html, body {
 
 /* ─── Toggle ───────────────────────────────────────────────── */
 .toggle-switch {
+  -webkit-app-region: no-drag;
   position: relative;
   width: 38px;
   height: 20px;
@@ -307,6 +308,7 @@ html, body {
 
 /* ─── Theme Button ─────────────────────────────────────────── */
 .theme-btn {
+  -webkit-app-region: no-drag;
   width: 34px;
   height: 34px;
   border-radius: var(--r-sm);
@@ -325,6 +327,7 @@ html, body {
 
 /* ─── Scale Slider ─────────────────────────────────────────── */
 .scale-slider {
+  -webkit-app-region: no-drag;
   -webkit-appearance: none;
   appearance: none;
   flex: 1;

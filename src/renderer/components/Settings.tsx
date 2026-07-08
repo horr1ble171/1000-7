@@ -40,27 +40,15 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
     document.documentElement.classList.toggle('light', t === 'light')
   }
 
-  function toggleSync() {
-    const n = !syncThemeWithOS; setSyncThemeWithOS(n)
-    electron.setSetting('syncThemeWithOS', n)
-  }
-
-  function toggleAnim() {
-    const n = !animations; setAnimations(n); electron.setSetting('animations', n)
-  }
+  function toggleSync() { const n = !syncThemeWithOS; setSyncThemeWithOS(n); electron.setSetting('syncThemeWithOS', n) }
+  function toggleAnim() { const n = !animations; setAnimations(n); electron.setSetting('animations', n) }
+  function toggleTray() { const n = !minimizeToTray; setMinimizeToTray(n); electron.setSetting('minimizeToTray', n) }
+  function toggleAutoStart() { const n = !autoStart; setAutoStart(n); electron.setAutoStart(n); electron.setSetting('autoStart', n) }
 
   function handleScale(e: React.ChangeEvent<HTMLInputElement>) {
     const v = parseInt(e.target.value); setUiScale(v)
     electron.setSetting('uiScale', v)
     document.documentElement.style.fontSize = `${v / 100}rem`
-  }
-
-  function toggleTray() {
-    const n = !minimizeToTray; setMinimizeToTray(n); electron.setSetting('minimizeToTray', n)
-  }
-
-  function toggleAutoStart() {
-    const n = !autoStart; setAutoStart(n); electron.setAutoStart(n); electron.setSetting('autoStart', n)
   }
 
   function handleHotkeyClick(type: 'start' | 'stop') {
@@ -92,113 +80,116 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
   }
 
   const Row = ({ label, icon, children }: any) => (
-    <div className="settings-row">
-      <span className="settings-label-text">{icon && <span style={{ display: 'flex' }}>{icon}</span>}{label}</span>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 32 }}>
+      <span style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 8 }}>
+        {icon && <span style={{ display: 'flex' }}>{icon}</span>}{label}
+      </span>
       {children}
     </div>
   )
 
-  const content = (
-    <div className="settings-panel">
-      <div className="settings-header">
-        <button className="theme-btn" onClick={onClose}><ArrowLeft size={16} /></button>
-        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Настройки</span>
-        <div style={{ width: 34 }} />
-      </div>
-
-      <div className="settings-body">
-        {/* Внешний вид */}
-        <div className="settings-group">
-          <div className="settings-group-label" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Palette size={11} />Внешний вид</div>
-          <div className={window.innerHeight > 700 ? 'glass-card' : ''} style={window.innerHeight <= 700 ? { padding: '8px 0' } : { padding: 12 }}>
-            <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
-              <button className={`theme-btn ${!syncThemeWithOS && theme === 'dark' ? 'active' : ''}`} onClick={() => handleTheme('dark')}><Moon size={14} /></button>
-              <button className={`theme-btn ${!syncThemeWithOS && theme === 'light' ? 'active' : ''}`} onClick={() => handleTheme('light')}><Sun size={14} /></button>
-            </div>
-            <Row label="Синхронизация с Windows" icon={<MonitorCheck size={13} />}>
-              <div className={`toggle-switch ${syncThemeWithOS ? 'active' : ''}`} onClick={toggleSync} />
-            </Row>
-          </div>
-        </div>
-
-        {/* Горячие клавиши */}
-        <div className="settings-group">
-          <div className="settings-group-label" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Keyboard size={11} />Горячие клавиши</div>
-          <div className="glass-card" style={{ padding: 12 }}>
-            <Row label="Старт">
-              <button className={`hotkey-pill ${listening === 'start' ? 'listening' : ''}`} style={{ minWidth: 56 }} onClick={() => handleHotkeyClick('start')}>
-                {listening === 'start' ? '...' : hotkeys.start}
-              </button>
-            </Row>
-            <Row label="Стоп">
-              <button className={`hotkey-pill ${listening === 'stop' ? 'listening' : ''}`} style={{ minWidth: 56 }} onClick={() => handleHotkeyClick('stop')}>
-                {listening === 'stop' ? '...' : hotkeys.stop}
-              </button>
-            </Row>
-          </div>
-        </div>
-
-        {/* Интерфейс */}
-        <div className="settings-group">
-          <div className="settings-group-label" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Sliders size={11} />Интерфейс</div>
-          <div className="glass-card" style={{ padding: 12 }}>
-            <Row label="Анимации" icon={<Sparkles size={13} />}>
-              <div className={`toggle-switch ${animations ? 'active' : ''}`} onClick={toggleAnim} />
-            </Row>
-            <Row label="Масштаб UI" icon={<Monitor size={13} />}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, maxWidth: 170 }}>
-                <input type="range" className="scale-slider" min={80} max={150} step={5} value={uiScale} onChange={handleScale} />
-                <span className="scale-value" style={{ minWidth: 32, textAlign: 'right' }}>{uiScale}%</span>
-              </div>
-            </Row>
-          </div>
-        </div>
-
-        {/* Поведение */}
-        <div className="settings-group">
-          <div className="settings-group-label" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Settings2 size={11} />Поведение</div>
-          <div className="glass-card" style={{ padding: 12 }}>
-            <Row label="Автозапуск при старте Windows" icon={<Power size={13} />}>
-              <div className={`toggle-switch ${autoStart ? 'active' : ''}`} onClick={toggleAutoStart} />
-            </Row>
-            <Row label="Сворачивать в трей при закрытии">
-              <div className={`toggle-switch ${minimizeToTray ? 'active' : ''}`} onClick={toggleTray} />
-            </Row>
-          </div>
-        </div>
-      </div>
-
-      <div className="settings-footer">
-        <button className="btn-danger" onClick={handleReset} style={{ padding: '8px 14px' }}>
-          <RotateCcw size={12} />
-          {confirmReset ? 'Подтвердите сброс' : 'Сбросить настройки'}
-        </button>
-      </div>
-    </div>
-  )
+  const panelStyle: React.CSSProperties = {
+    position: 'fixed', top: 0, right: 0, bottom: 0, width: 340,
+    zIndex: 100, display: 'flex', flexDirection: 'column',
+    background: 'var(--bg-surface)', borderLeft: '1px solid var(--border-subtle)',
+    boxShadow: '-8px 0 32px rgba(0,0,0,0.3)'
+  }
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          className="settings-backdrop"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          onClick={onClose}
-        >
+        <>
+          <motion.div
+            className="settings-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            onClick={onClose}
+          />
           <motion.div
             initial={{ x: 340 }}
             animate={{ x: 0 }}
             exit={{ x: 340 }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            style={panelStyle}
             onClick={(e) => e.stopPropagation()}
-            style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 340 }}
           >
-            {content}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+              <button className="theme-btn" onClick={onClose} style={{ width: 34, height: 34 }}><ArrowLeft size={16} /></button>
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Настройки</span>
+              <div style={{ width: 34 }} />
+            </div>
+
+            <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 8 }}><Palette size={11} />Внешний вид</div>
+                <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 14, padding: 12 }}>
+                  <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+                    <button className={`theme-btn ${!syncThemeWithOS && theme === 'dark' ? 'active' : ''}`} onClick={() => handleTheme('dark')} style={{ width: 34, height: 34 }}><Moon size={14} /></button>
+                    <button className={`theme-btn ${!syncThemeWithOS && theme === 'light' ? 'active' : ''}`} onClick={() => handleTheme('light')} style={{ width: 34, height: 34 }}><Sun size={14} /></button>
+                  </div>
+                  <Row label="Синхронизация с Windows" icon={<MonitorCheck size={13} />}>
+                    <div className={`toggle-switch ${syncThemeWithOS ? 'active' : ''}`} onClick={toggleSync} />
+                  </Row>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 8 }}><Keyboard size={11} />Горячие клавиши</div>
+                <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 14, padding: 12 }}>
+                  <Row label="Старт">
+                    <button className={`hotkey-pill ${listening === 'start' ? 'listening' : ''}`} style={{ minWidth: 56, WebkitAppRegion: 'no-drag' as any }} onClick={() => handleHotkeyClick('start')}>
+                      {listening === 'start' ? '...' : hotkeys.start}
+                    </button>
+                  </Row>
+                  <div style={{ height: 8 }} />
+                  <Row label="Стоп">
+                    <button className={`hotkey-pill ${listening === 'stop' ? 'listening' : ''}`} style={{ minWidth: 56, WebkitAppRegion: 'no-drag' as any }} onClick={() => handleHotkeyClick('stop')}>
+                      {listening === 'stop' ? '...' : hotkeys.stop}
+                    </button>
+                  </Row>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 8 }}><Sliders size={11} />Интерфейс</div>
+                <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 14, padding: 12 }}>
+                  <Row label="Анимации" icon={<Sparkles size={13} />}>
+                    <div className={`toggle-switch ${animations ? 'active' : ''}`} onClick={toggleAnim} />
+                  </Row>
+                  <div style={{ height: 8 }} />
+                  <Row label="Масштаб UI" icon={<Monitor size={13} />}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, maxWidth: 170, WebkitAppRegion: 'no-drag' as any }}>
+                      <input type="range" className="scale-slider" min={80} max={150} step={5} value={uiScale} onChange={handleScale} />
+                      <span className="scale-value" style={{ minWidth: 32, textAlign: 'right' }}>{uiScale}%</span>
+                    </div>
+                  </Row>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 8 }}><Settings2 size={11} />Поведение</div>
+                <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 14, padding: 12 }}>
+                  <Row label="Автозапуск при старте Windows" icon={<Power size={13} />}>
+                    <div className={`toggle-switch ${autoStart ? 'active' : ''}`} onClick={toggleAutoStart} />
+                  </Row>
+                  <div style={{ height: 8 }} />
+                  <Row label="Сворачивать в трей при закрытии">
+                    <div className={`toggle-switch ${minimizeToTray ? 'active' : ''}`} onClick={toggleTray} />
+                  </Row>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+              <button className="btn-danger" onClick={handleReset} style={{ padding: '8px 14px' }}>
+                <RotateCcw size={12} />
+                {confirmReset ? 'Подтвердите сброс' : 'Сбросить настройки'}
+              </button>
+            </div>
           </motion.div>
-        </motion.div>
+        </>
       )}
     </AnimatePresence>
   )
