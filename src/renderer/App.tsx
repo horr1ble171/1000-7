@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Gamepad2 } from 'lucide-react'
+import { Gamepad2, MessageSquare } from 'lucide-react'
 import { useElectron } from '@/hooks/useElectron'
 import { useHotkeys } from '@/hooks/useHotkeys'
 import { Header } from '@/components/Header'
@@ -17,7 +17,7 @@ import { TOTAL_COUNT } from '@shared/constants'
 export default function App() {
   const {
     getHotkeys, saveHotkey, getSettings, getDuration, setDuration,
-    getDotaMode, setDotaMode,
+    getDotaMode, setDotaMode, getDota1000Mode, setDota1000Mode,
     startSending, stopSending, onMessage
   } = useElectron()
 
@@ -31,6 +31,7 @@ export default function App() {
   const [online, setOnline] = useState(true)
   const [uiScale, setUiScale] = useState(100)
   const [dotaMode, setDotaModeLocal] = useState(false)
+  const [dota1000Mode, setDota1000ModeLocal] = useState(false)
 
   const handleSaveHotkey = async (type: 'start' | 'stop', key: string) => {
     await saveHotkey(type, key)
@@ -49,6 +50,7 @@ export default function App() {
       if (settings) {
         setUiScale(settings.uiScale)
         setDotaModeLocal(settings.dotaMode)
+        setDota1000ModeLocal(settings.dota1000Mode)
         const theme = settings.syncThemeWithOS ? null : settings.theme
         if (theme) document.documentElement.classList.toggle('light', theme === 'light')
         document.documentElement.style.fontSize = `${settings.uiScale / 100}rem`
@@ -96,9 +98,19 @@ export default function App() {
     const next = !dotaMode
     setDotaModeLocal(next)
     setDotaMode(next)
+    if (!next) {
+      setDota1000ModeLocal(false)
+      setDota1000Mode(false)
+    }
     const newDuration = next ? 45 : 25
     setTotalSec(newDuration)
     setDuration(newDuration)
+  }
+
+  const handleDota1000Toggle = () => {
+    const next = !dota1000Mode
+    setDota1000ModeLocal(next)
+    setDota1000Mode(next)
   }
 
   return (
@@ -132,7 +144,7 @@ export default function App() {
           />
         </div>
 
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div
             onClick={handleDotaToggle}
             style={{
@@ -150,6 +162,27 @@ export default function App() {
               </span>
             </span>
             <div className={`toggle-switch ${dotaMode ? 'active' : ''}`} />
+          </div>
+
+          <div
+            onClick={dotaMode ? handleDota1000Toggle : undefined}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
+              borderRadius: 14, padding: '10px 14px',
+              cursor: dotaMode ? 'pointer' : 'not-allowed',
+              opacity: dotaMode ? 1 : 0.35,
+              transition: 'all 0.15s', WebkitAppRegion: 'no-drag' as any
+            }}
+          >
+            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <MessageSquare size={14} style={{ color: dota1000Mode ? 'var(--accent)' : 'var(--text-muted)' }} />
+              <span>1000-7 в чат</span>
+              <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+                Shift+ENTER + число + ENTER
+              </span>
+            </span>
+            <div className={`toggle-switch ${dota1000Mode ? 'active' : ''}`} />
           </div>
         </div>
 

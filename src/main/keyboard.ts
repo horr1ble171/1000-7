@@ -63,6 +63,19 @@ export function typeAndEnterDota(text: string): void {
   }
 }
 
+export function typeAndEnterDota1000(text: string): void {
+  try {
+    const ps = getPowerShell()
+    const escaped = escapeKeys(text).replace(/'/g, "''")
+    ps.stdin!.write(
+      `Send-Keys '+{ENTER}'; Start-Sleep -Milliseconds 25; ` +
+      `Send-Keys '${escaped}'; Start-Sleep -Milliseconds 25; Send-Keys '{ENTER}'\r\n`
+    )
+  } catch {
+    // ignore
+  }
+}
+
 export function killPowerShell(): void {
   if (psProcess && !psProcess.killed) {
     try {

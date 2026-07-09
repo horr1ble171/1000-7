@@ -13,6 +13,7 @@ interface AppSettings {
   stopHotkey: string
   totalDuration: number
   dotaMode: boolean
+  dota1000Mode: boolean
   theme: 'dark' | 'light'
   syncThemeWithOS: boolean
   animations: boolean
@@ -29,6 +30,7 @@ const store = new Store<AppSettings>({
     stopHotkey: 'F2',
     totalDuration: 25,
     dotaMode: false,
+    dota1000Mode: false,
     theme: 'dark',
     syncThemeWithOS: true,
     animations: true,
@@ -243,13 +245,21 @@ ipcMain.handle('get-settings', () => ({
   uiScale: store.get('uiScale'),
   autoStart: store.get('autoStart'),
   minimizeToTray: store.get('minimizeToTray'),
-  dotaMode: store.get('dotaMode')
+  dotaMode: store.get('dotaMode'),
+  dota1000Mode: store.get('dota1000Mode')
 }))
 
 ipcMain.handle('get-dota-mode', () => store.get('dotaMode'))
 
 ipcMain.handle('set-dota-mode', (_, enabled: boolean) => {
   store.set('dotaMode', enabled)
+  return true
+})
+
+ipcMain.handle('get-dota1000-mode', () => store.get('dota1000Mode'))
+
+ipcMain.handle('set-dota1000-mode', (_, enabled: boolean) => {
+  store.set('dota1000Mode', enabled)
   return true
 })
 

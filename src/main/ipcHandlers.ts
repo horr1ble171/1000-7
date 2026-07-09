@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import Store from 'electron-store'
-import { typeAndEnter, typeAndEnterDota, killPowerShell } from './keyboard'
+import { typeAndEnter, typeAndEnterDota, typeAndEnterDota1000, killPowerShell } from './keyboard'
 
 let isSending = false
 let shouldStop = false
@@ -27,10 +27,19 @@ export function setupIPCHandlers(mainWindow: BrowserWindow | null, store: Store)
     const totalSec = Math.max(25, store.get('totalDuration') as number || 25)
     const delay = Math.round((totalSec * 1000) / sequence.length)
     const dotaMode = store.get('dotaMode') as boolean
+    const dota1000Mode = store.get('dota1000Mode') as boolean
 
     mainWindow?.webContents.send('status-update', 'running', 'ОТПРАВКА...')
 
-    if (dotaMode) {
+    if (dotaMode && dota1000Mode) {
+      for (let i = 0; i < sequence.length && !shouldStop; i++) {
+        const text = sequence[i]
+        typeAndEnterDota1000(text)
+        mainWindow?.webContents.send('number-update', text)
+        mainWindow?.webContents.send('counter-update', i + 1, sequence.length)
+        await sleep(delay)
+      }
+    } else if (dotaMode) {
       for (let i = 0; i < sequence.length && !shouldStop; i++) {
         const text = sequence[i]
         typeAndEnterDota(text)
